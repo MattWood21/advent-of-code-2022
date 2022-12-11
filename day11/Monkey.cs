@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,26 +9,26 @@ namespace day11
 {
     public class Monkey
     {
-        public Queue<int> Items { get; set; } = new Queue<int>();
+        public Queue<long> Items { get; set; } = new Queue<long>();
         public OperationType OperationType { get; set; }
         public int OperationValue { get; set; }
         public int TestDivisibleBy { get; set; }
         public (int targetIfTrue, int targetIfFalse) Targets { get; set; }
-        public int ItemsInspected { get; set; } = 0;
+        public long ItemsInspected { get; set; } = 0;
 
-        public void AddItem(int itemWorry)
+        public void AddItem(long itemWorry)
         {
             Items.Enqueue(itemWorry);
         }
 
-        public IEnumerable<(int targetMonkey, int worry)> Go()
+        public IEnumerable<(int targetMonkey, long worry)> Go(long supermodulo)
         {
-            var results = new List<(int targetMonkey, int worry)>();
+            var results = new List<(int targetMonkey, long worry)>();
             while(Items.Any())
             {
                 ItemsInspected++;
                 var worry = Items.Dequeue();
-                int worryAfterOperation;
+                long worryAfterOperation;
                 if (OperationType == OperationType.Add)
                 {
                     worryAfterOperation = worry + OperationValue;
@@ -43,14 +44,18 @@ namespace day11
                 else
                     throw new NotImplementedException();
 
-                //var worryAfterSafeInspection = worryAfterOperation / 3;
+                if(worryAfterOperation <= 0)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 if(worryAfterOperation % TestDivisibleBy == 0)
                 {
                     results.Add((Targets.targetIfTrue, worryAfterOperation));
                 }
                 else
                 {
-                    results.Add((Targets.targetIfFalse, worryAfterOperation));
+                    results.Add((Targets.targetIfFalse, worryAfterOperation % supermodulo));
                 }
             }
             return results;
@@ -62,7 +67,7 @@ namespace day11
             {
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 79, 98 }),
+                    Items = new Queue<long>(new long[] { 79, 98 }),
                     OperationType = OperationType.Multiply,
                     OperationValue = 19,
                     TestDivisibleBy = 23,
@@ -70,7 +75,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 54, 65, 75, 74 }),
+                    Items = new Queue<long>(new long[] { 54, 65, 75, 74 }),
                     OperationType = OperationType.Add,
                     OperationValue = 6,
                     TestDivisibleBy = 19,
@@ -78,7 +83,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 79, 60, 97 }),
+                    Items = new Queue<long>(new long[] { 79, 60, 97 }),
                     OperationType = OperationType.Square,
                     OperationValue = 0,
                     TestDivisibleBy = 13,
@@ -86,7 +91,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 74 }),
+                    Items = new Queue<long>(new long[] { 74 }),
                     OperationType = OperationType.Add,
                     OperationValue = 3,
                     TestDivisibleBy = 17,
@@ -101,7 +106,7 @@ namespace day11
             {
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 63, 57 }),
+                    Items = new Queue<long>(new long[] { 63, 57 }),
                     OperationType = OperationType.Multiply,
                     OperationValue = 11,
                     TestDivisibleBy = 7,
@@ -109,7 +114,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 82, 66, 87, 78, 77, 92, 83 }),
+                    Items = new Queue<long>(new long[] { 82, 66, 87, 78, 77, 92, 83 }),
                     OperationType = OperationType.Add,
                     OperationValue = 1,
                     TestDivisibleBy = 11,
@@ -117,7 +122,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 97, 53, 53, 85, 58, 54 }),
+                    Items = new Queue<long>(new long[] { 97, 53, 53, 85, 58, 54 }),
                     OperationType = OperationType.Multiply,
                     OperationValue = 7,
                     TestDivisibleBy = 13,
@@ -125,7 +130,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 50 }),
+                    Items = new Queue<long>(new long[] { 50 }),
                     OperationType = OperationType.Add,
                     OperationValue = 3,
                     TestDivisibleBy = 3,
@@ -133,7 +138,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 64, 69, 52, 65, 73 }),
+                    Items = new Queue<long>(new long[] { 64, 69, 52, 65, 73 }),
                     OperationType = OperationType.Add,
                     OperationValue = 6,
                     TestDivisibleBy = 17,
@@ -141,7 +146,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 57, 91, 65 }),
+                    Items = new Queue<long>(new long[] { 57, 91, 65 }),
                     OperationType = OperationType.Add,
                     OperationValue = 5,
                     TestDivisibleBy = 2,
@@ -149,7 +154,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 67, 91, 84, 78, 60, 69, 99, 83 }),
+                    Items = new Queue<long>(new long[] { 67, 91, 84, 78, 60, 69, 99, 83 }),
                     OperationType = OperationType.Square,
                     OperationValue = 0,
                     TestDivisibleBy = 5,
@@ -157,7 +162,7 @@ namespace day11
                 },
                 new Monkey()
                 {
-                    Items = new Queue<int>(new int[] { 58, 78, 69, 65 }),
+                    Items = new Queue<long>(new long[] { 58, 78, 69, 65 }),
                     OperationType = OperationType.Add,
                     OperationValue = 7,
                     TestDivisibleBy = 19,

@@ -15,19 +15,29 @@ namespace day11
             _monkeys = monkeys.ToList();
         }
 
-        public void ExecuteRound()
+        public void ExecuteRound(long supermodulo)
         {
             var counter = 0;
             foreach (var monkey in _monkeys)
             {
-                Console.WriteLine($@"Monkey {counter} turn is starting");
-                var result = monkey.Go();
-                Console.WriteLine($@"Inspected {result.Count()} items. Sum of inspected items: {monkey.ItemsInspected}");
+                //Console.WriteLine($@"Monkey {counter} turn is starting");
+                var result = monkey.Go(supermodulo);
+                //Console.WriteLine($@"Inspected {result.Count()} items. Sum of inspected items: {monkey.ItemsInspected}");
                 foreach (var item in result)
                 {
-                    Console.WriteLine($@"Monkey is throwing item {item.worry} to Monkey {item.targetMonkey}");
+                    //Console.WriteLine($@"Monkey is throwing item {item.worry} to Monkey {item.targetMonkey}");
                     _monkeys[item.targetMonkey].AddItem(item.worry);
                 }
+                counter++;
+            }
+        }
+
+        public void PrintItemsInspected()
+        {
+            var counter = 0;
+            foreach(var monkey in _monkeys)
+            {
+                Console.WriteLine($@"Monkey {counter} has inspected {monkey.ItemsInspected} items");
                 counter++;
             }
         }
